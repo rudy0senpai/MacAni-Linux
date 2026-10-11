@@ -1,0 +1,21 @@
+# Build output
+out/
+work/
+*.iso
+
+# Temporary build files
+*.log
+*.tmp
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Downloaded package source/build output
+src/
+pkg/
+
+# Credentials
+.env
+.env.*
