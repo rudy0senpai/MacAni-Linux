@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=AnimeKeyboard
+Comment=Anime themed KDE Plasma virtual keyboard
+Exec=anime-keyboard
+Type=Application
+X-KDE-Wayland-VirtualKeyboard=true
+Icon=input-keyboard-virtual
+NoDisplay=true

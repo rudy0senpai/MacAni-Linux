@@ -1,0 +1,12 @@
+[Unit]
+Description=Configure the MacAni Linux live desktop user
+After=local-fs.target
+Before=display-manager.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/macani-live-user-setup
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

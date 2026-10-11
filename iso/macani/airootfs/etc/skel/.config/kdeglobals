@@ -1,0 +1,13 @@
+[General]
+ColorScheme=MacAni-Sakura
+Name=MacAni Sakura
+widgetStyle=Breeze
+
+[Icons]
+Theme=MacAni-Characters
+
+[KDE]
+SingleClick=false
+
+[Sounds]
+Theme=MacAni-Sakura

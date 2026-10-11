@@ -1,0 +1,10 @@
+[Icon Theme]
+Name=MacAni Characters
+Comment=Anime character artwork icons for MacAni Linux
+Inherits=breeze,hicolor
+Directories=256x256/apps
+
+[256x256/apps]
+Size=256
+Type=Fixed
+Context=Applications

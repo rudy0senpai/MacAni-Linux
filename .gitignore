@@ -19,3 +19,22 @@ pkg/
 # Credentials
 .env
 .env.*
+
+# Generated ISO and build workspace
+/out/
+/work/
+/work*/
+
+# Generated ISO and build directories
+/out/
+/work*/
+/*.iso
+*.iso
+
+# Upstream source checkouts
+/upstream/archiso-source/
+/upstream/dolphin/
+
+# Local backups
+*.bak
+*.bak.*

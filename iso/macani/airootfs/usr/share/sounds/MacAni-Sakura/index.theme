@@ -1,0 +1,8 @@
+[Sound Theme]
+Name=MacAni Sakura
+Comment=Anime-inspired desktop event sounds
+Inherits=freedesktop
+Directories=stereo
+
+[stereo]
+OutputProfile=stereo

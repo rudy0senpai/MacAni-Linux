@@ -1,0 +1,52 @@
+#!/usr/bin/bash
+set -euo pipefail
+
+if ! id macani >/dev/null 2>&1; then
+    useradd --create-home --skel /etc/skel --shell /bin/bash macani
+fi
+
+# Add only supplementary groups that exist in this image.
+for group in wheel audio video input storage optical lp; do
+    if getent group "$group" >/dev/null; then
+        usermod -aG "$group" macani
+    fi
+fi
+
+home="$(getent passwd macani | cut -d: -f6)"
+install -d -o macani -g macani "$home/.config"
+
+# Preserve any existing user settings; supply defaults only when absent.
+for file in kdeglobals plasma-org.kde.plasma.desktop-appletsrc; do
+    if [[ ! -e "$home/.config/$file" && -e "/etc/skel/.config/$file" ]]; then
+        install -o macani -g macani -m 0644 \
+            "/etc/skel/.config/$file" "$home/.config/$file"
+    fi
+done
+
+# Select an installed Plasma session, preferring Wayland.
+session=""
+for candidate in \
+    /usr/share/wayland-sessions/plasma.desktop \
+    /usr/share/wayland-sessions/plasmawayland.desktop \
+    /usr/share/xsessions/plasmax11.desktop \
+    /usr/share/xsessions/plasma.desktop; do
+    if [[ -f "$candidate" ]]; then
+        session="$(basename "$candidate" .desktop)"
+        break
+    fi
+done
+
+if [[ -z "$session" ]]; then
+    echo "MacAni: no Plasma session file found" >&2
+    exit 1
+fi
+
+mkdir -p /etc/sddm.conf.d
+cat > /etc/sddm.conf.d/10-macani-autologin.conf <<CONF
+[Autologin]
+User=macani
+Session=$session
+Relogin=false
+CONF
+
+chown -R macani:macani "$home/.config"

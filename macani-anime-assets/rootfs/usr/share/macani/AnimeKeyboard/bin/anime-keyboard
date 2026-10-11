@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+
+PROJECT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+export QML2_IMPORT_PATH="$PROJECT_DIR/plasma-theme/qml${QML2_IMPORT_PATH:+:$QML2_IMPORT_PATH}"
+export QT_VIRTUALKEYBOARD_STYLE="Anime"
+
+exec plasma-keyboard "$@"
