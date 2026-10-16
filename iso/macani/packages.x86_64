@@ -129,6 +129,11 @@ xl2tpd
 zsh
 
 # MacAni Linux — KDE desktop
+kitty
+fish
+fastfetch
+chafa
+ttf-jetbrains-mono
 plasma-desktop
 plasma-workspace
 plasma-pa

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/fastfetch-cli/fastfetch/2.69.0/doc/json_schema.json",
+  "logo": {
+    "type": "chafa",
+    "source": "/usr/share/pixmaps/macani/MacAni-Linux_logo.png",
+    "width": 25,
+    "height": 12,
+    "preserveAspectRatio": true
+  },
+  "display": {
+    "separator": "  ",
+    "color": {
+      "keys": "cyan",
+      "title": "blue",
+      "output": "white",
+      "separator": "magenta"
+    }
+  },
+  "modules": [
+    { "type": "title", "format": "{user-name}@{host-name}" },
+    "separator",
+    { "type": "os", "key": "OS", "format": "MacAni Linux (Arch-based)", "keyColor": "cyan" },
+    { "type": "kernel", "key": "Kernel", "keyColor": "blue" },
+    { "type": "uptime", "key": "Uptime", "keyColor": "magenta" },
+    { "type": "cpu", "key": "CPU", "keyColor": "cyan" },
+    { "type": "memory", "key": "Memory", "keyColor": "blue" },
+    { "type": "de", "key": "Desktop", "keyColor": "magenta" },
+    { "type": "terminal", "key": "Terminal", "keyColor": "cyan" }
+  ]
+}

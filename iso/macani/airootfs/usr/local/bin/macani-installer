@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+if [[ "${1:-}" == -h || "${1:-}" == --help ]]; then
+    echo 'Launch the MacAni Archinstall guided installer.'
+    echo 'Usage: macani-installer'
+    echo 'GRUB is preselected. Archinstall offers rEFInd in UEFI mode and hides it in legacy BIOS mode.'
+    exit 0
+fi
+if [[ $# -ne 0 ]]; then
+    echo "Usage: ${0##*/} [--help]" >&2
+    exit 2
+fi
+if [[ ! -d /run/archiso ]]; then
+    echo 'MacAni installer launcher is available only in the Archiso live session.' >&2
+    exit 1
+fi
+if ! command -v archinstall >/dev/null 2>&1; then
+    echo 'archinstall is not present in this image. No installation was started.' >&2
+    exit 1
+fi
+
+readonly source_package_dir=/usr/share/macani/installer/packages
+readonly source_config=/usr/share/macani/installer/archinstall.json
+readonly source_target_script=/usr/share/macani/installer/install-target-customizations.sh
+[[ -f "$source_config" && -f "$source_target_script" ]] || {
+    echo 'MacAni installer configuration is incomplete. No installation was started.' >&2
+    exit 1
+}
+
+shopt -s nullglob
+packages=(
+    "$source_package_dir"/macani-branding-*.pkg.tar.zst
+    "$source_package_dir"/macani-fastfetch-*.pkg.tar.zst
+    "$source_package_dir"/aldo-terminal-*.pkg.tar.zst
+    "$source_package_dir"/macani-desktop-*.pkg.tar.zst
+)
+if (( ${#packages[@]} != 4 )); then
+    printf 'MacAni local package cache is incomplete (expected 4 packages, found %d). No installation was started.\n' "${#packages[@]}" >&2
+    exit 1
+fi
+
+install -d -m 0755 /run/macani/packages
+for package in "${packages[@]}"; do
+    install -m 0644 "$package" "/run/macani/packages/${package##*/}"
+done
+install -m 0644 "$source_config" /run/macani/archinstall.json
+install -m 0755 "$source_target_script" /run/macani/install-target-customizations.sh
+
+cat <<'NOTICE'
+MacAni Linux guided installation
+
+Archinstall provides the real disk, partitioning, filesystem, user, locale, and
+network installation workflow. It opens in a terminal and asks you to review
+the target disk and every destructive action before confirmation. Nothing is
+partitioned by this launcher.
+
+GRUB is preselected as the broad-compatibility recommendation. Archinstall's
+actual bootloader menu lets you select rEFInd on UEFI systems; rEFInd is not
+shown in legacy BIOS mode. Only the bootloader selected in that menu is
+installed. The MacAni local desktop/branding packages are installed into the
+target by Archinstall's post-install custom command. Live autologin is excluded.
+
+Back up important data first. This launcher never runs an installation during
+development tests and does not target the live USB or development disks.
+NOTICE
+exec archinstall --config /run/macani/archinstall.json

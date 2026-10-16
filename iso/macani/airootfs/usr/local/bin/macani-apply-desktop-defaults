@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+if (( EUID != 0 )); then
+    echo 'macani-apply-desktop-defaults must run as root.' >&2
+    exit 1
+fi
+
+if [[ ! -x /usr/bin/fish ]]; then
+    echo 'Fish is not installed; keeping existing login shells.' >&2
+    exit 0
+fi
+useradd --defaults --shell /usr/bin/fish
+
+while IFS=: read -r username _ uid _ _ home _; do
+    [[ "$uid" =~ ^[0-9]+$ ]] || continue
+    (( uid >= 1000 && uid < 60000 )) || continue
+    [[ "$username" != nobody && -n "$home" && -d "$home" ]] || continue
+
+    current_shell=$(getent passwd "$username" | cut -d: -f7)
+    if [[ "$current_shell" != /usr/bin/fish ]]; then
+        usermod --shell /usr/bin/fish "$username"
+    fi
+
+    group=$(id -gn "$username")
+    install -d -o "$username" -g "$group" -m 0755 "$home/.config"
+    for file in kdeglobals plasma-org.kde.plasma.desktop-appletsrc plasmarc gtk-3.0/settings.ini gtk-4.0/settings.ini; do
+        source_file="/etc/skel/.config/$file"
+        target_file="$home/.config/$file"
+        if [[ -f "$source_file" && ! -e "$target_file" ]]; then
+            install -d -o "$username" -g "$group" -m 0755 "$(dirname -- "$target_file")"
+            install -o "$username" -g "$group" -m 0644 "$source_file" "$target_file"
+        fi
+    done
+done < <(getent passwd)

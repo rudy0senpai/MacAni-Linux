@@ -1,7 +1,12 @@
 [General]
 ColorScheme=MacAni-Sakura
 Name=MacAni Sakura
+TerminalApplication=aldo
+TerminalService=aldo.desktop
 widgetStyle=Breeze
+font=Noto Sans,10,-1,0,50,0,0,0,0,0
+menuFont=Noto Sans,10,-1,0,50,0,0,0,0,0
+smallestReadableFont=Noto Sans,9,-1,0,50,0,0,0,0,0
 
 [Icons]
 Theme=MacAni-Characters
@@ -9,5 +14,11 @@ Theme=MacAni-Characters
 [KDE]
 SingleClick=false
 
+[WM]
+activeFont=Noto Sans,10,-1,0,50,0,0,0,0,0
+
 [Sounds]
 Theme=MacAni-Sakura
+
+[Mouse]
+cursorTheme=Breeze

@@ -1,0 +1,20 @@
+pkgname=macani-fastfetch
+pkgver=0.2.0
+pkgrel=1
+pkgdesc='MacAni Fastfetch configuration using the official transparent logo'
+arch=('any')
+license=('LicenseRef-MacAni')
+depends=('fastfetch' 'macani-branding')
+optdepends=('chafa: render the official logo in non-Kitty terminals')
+
+package() {
+    local repo_root overlay
+    repo_root=$(realpath "$startdir/../..")
+    overlay="$repo_root/iso/macani/airootfs"
+    install -Dm644 "$overlay/etc/fastfetch/macani-kitty.jsonc" \
+        "$pkgdir/etc/fastfetch/macani-kitty.jsonc"
+    install -Dm644 "$overlay/etc/fastfetch/macani-fallback.jsonc" \
+        "$pkgdir/etc/fastfetch/macani-fallback.jsonc"
+    install -Dm644 "$repo_root/packages/LICENSE-STATUS.md" \
+        "$pkgdir/usr/share/licenses/$pkgname/LICENSE-STATUS.md"
+}

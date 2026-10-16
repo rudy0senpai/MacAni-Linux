@@ -1,52 +1,78 @@
-#!/usr/bin/bash
-set -euo pipefail
+#!/usr/bin/env bash
+set -Eeuo pipefail
 
-if ! id macani >/dev/null 2>&1; then
-    useradd --create-home --skel /etc/skel --shell /bin/bash macani
+readonly USER_NAME=macani
+readonly SDDM_CONF_DIR=/etc/sddm.conf.d
+readonly SDDM_CONF=${SDDM_CONF_DIR}/10-macani-live.conf
+
+log() { printf 'macani-live-user-setup: %s\n' "$*"; }
+die() { log "ERROR: $*" >&2; exit 1; }
+
+# This program is shipped only in the Archiso airootfs. Create the live user
+# only when absent; never alter its password or replace existing home content.
+live_shell=/bin/bash
+if [[ -x /usr/bin/fish ]]; then
+    live_shell=/usr/bin/fish
+else
+    log 'WARNING: fish is missing; using Bash for the live session'
 fi
+if ! getent passwd "$USER_NAME" >/dev/null; then
+    useradd --create-home --skel /etc/skel --shell "$live_shell" "$USER_NAME"
+fi
+user_entry=$(getent passwd "$USER_NAME") || die "could not read passwd entry for ${USER_NAME}"
+existing_shell=$(cut -d: -f7 <<<"$user_entry")
+if [[ "$existing_shell" != "$live_shell" ]]; then
+    usermod --shell "$live_shell" "$USER_NAME"
+fi
+user_home=$(cut -d: -f6 <<<"$user_entry")
+[[ -n "$user_home" ]] || die "passwd entry has no home directory for ${USER_NAME}"
+install -d -o "$USER_NAME" -g "$USER_NAME" -m 0755 "$user_home"
 
-# Add only supplementary groups that exist in this image.
 for group in wheel audio video input storage optical lp; do
     if getent group "$group" >/dev/null; then
-        usermod -aG "$group" macani
-    fi
-fi
-
-home="$(getent passwd macani | cut -d: -f6)"
-install -d -o macani -g macani "$home/.config"
-
-# Preserve any existing user settings; supply defaults only when absent.
-for file in kdeglobals plasma-org.kde.plasma.desktop-appletsrc; do
-    if [[ ! -e "$home/.config/$file" && -e "/etc/skel/.config/$file" ]]; then
-        install -o macani -g macani -m 0644 \
-            "/etc/skel/.config/$file" "$home/.config/$file"
+        current_groups=$(id -nG "$USER_NAME")
+        if [[ " $current_groups " != *" $group "* ]]; then
+            usermod -aG "$group" "$USER_NAME"
+        fi
     fi
 done
 
-# Select an installed Plasma session, preferring Wayland.
-session=""
+install -d -o "$USER_NAME" -g "$USER_NAME" -m 0755 "$user_home/.config"
+for file in kdeglobals plasma-org.kde.plasma.desktop-appletsrc plasmarc gtk-3.0/settings.ini gtk-4.0/settings.ini; do
+    source_file="/etc/skel/.config/$file"
+    target_file="$user_home/.config/$file"
+    if [[ ! -e "$target_file" && -f "$source_file" ]]; then
+        install -d -o "$USER_NAME" -g "$USER_NAME" -m 0755 "$(dirname -- "$target_file")"
+        install -o "$USER_NAME" -g "$USER_NAME" -m 0644 "$source_file" "$target_file"
+    fi
+done
+
+# Session is derived from a .desktop file actually installed in this image.
+session_file=''
 for candidate in \
     /usr/share/wayland-sessions/plasma.desktop \
     /usr/share/wayland-sessions/plasmawayland.desktop \
     /usr/share/xsessions/plasmax11.desktop \
     /usr/share/xsessions/plasma.desktop; do
     if [[ -f "$candidate" ]]; then
-        session="$(basename "$candidate" .desktop)"
+        session_file=$candidate
         break
     fi
 done
+[[ -n "$session_file" ]] || die 'no supported Plasma session .desktop file exists in this image'
+session=$(basename "$session_file" .desktop)
 
-if [[ -z "$session" ]]; then
-    echo "MacAni: no Plasma session file found" >&2
-    exit 1
-fi
-
-mkdir -p /etc/sddm.conf.d
-cat > /etc/sddm.conf.d/10-macani-autologin.conf <<CONF
+install -d -m 0755 "$SDDM_CONF_DIR"
+tmp_conf=$(mktemp "${SDDM_CONF_DIR}/.10-macani-live.XXXXXX")
+trap 'rm -f "$tmp_conf"' EXIT
+cat >"$tmp_conf" <<EOF
 [Autologin]
-User=macani
-Session=$session
+User=${USER_NAME}
+Session=${session}
 Relogin=false
-CONF
-
-chown -R macani:macani "$home/.config"
+EOF
+chmod 0644 "$tmp_conf"
+install -o root -g root -m 0644 "$tmp_conf" "$SDDM_CONF"
+rm -f "$tmp_conf"
+trap - EXIT
+log "configured live user ${USER_NAME}; SDDM session ${session} (${session_file})"

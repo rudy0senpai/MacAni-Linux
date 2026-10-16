@@ -1,0 +1,22 @@
+pkgname=aldo-terminal
+pkgver=0.2.0
+pkgrel=1
+pkgdesc='Aldo, the MacAni Kitty terminal launcher with fish integration'
+arch=('any')
+license=('LicenseRef-MacAni')
+depends=('bash' 'kitty' 'fish' 'macani-fastfetch')
+optdepends=('konsole: graphical fallback if Kitty cannot open')
+
+package() {
+    local repo_root overlay
+    repo_root=$(realpath "$startdir/../..")
+    overlay="$repo_root/iso/macani/airootfs"
+    install -Dm755 "$overlay/usr/local/bin/aldo" "$pkgdir/usr/bin/aldo"
+    install -Dm644 "$overlay/etc/xdg/kitty/kitty.conf" "$pkgdir/etc/xdg/kitty/kitty.conf"
+    install -Dm644 "$overlay/etc/fish/conf.d/90-macani-fastfetch.fish" \
+        "$pkgdir/etc/fish/conf.d/90-macani-fastfetch.fish"
+    install -Dm644 "$overlay/usr/share/applications/aldo.desktop" \
+        "$pkgdir/usr/share/applications/aldo.desktop"
+    install -Dm644 "$repo_root/packages/LICENSE-STATUS.md" \
+        "$pkgdir/usr/share/licenses/$pkgname/LICENSE-STATUS.md"
+}

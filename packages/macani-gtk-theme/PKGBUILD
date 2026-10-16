@@ -1,0 +1,25 @@
+pkgname=macani-gtk-theme
+pkgver=2026.09.10
+pkgrel=1
+pkgdesc='Curated MacTahoe GTK 3 and GTK 4 dark theme assets'
+arch=('any')
+url='https://github.com/vinceliuice/MacTahoe-gtk-theme'
+license=('MIT')
+
+package() {
+    local repo_root overlay destination
+    repo_root=$(realpath "$startdir/../..")
+    overlay="$repo_root/iso/macani/airootfs/usr/share/themes/MacTahoe-Dark"
+    destination="$pkgdir/usr/share/themes/MacTahoe-Dark"
+    [[ -d "$overlay/gtk-3.0" && -d "$overlay/gtk-4.0" ]] || {
+        echo 'Curated GTK 3/4 theme payload is incomplete.' >&2
+        return 1
+    }
+    install -d -m 0755 "$destination"
+    cp -a "$overlay/gtk-3.0" "$overlay/gtk-4.0" "$destination/"
+    install -Dm644 "$overlay/index.theme" "$destination/index.theme"
+    install -Dm644 "$startdir/LICENSE.upstream" \
+        "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+    install -Dm644 "$startdir/UPSTREAM.md" \
+        "$pkgdir/usr/share/doc/$pkgname/UPSTREAM.md"
+}

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Install MacAni Linux
+GenericName=Guided system installer
+Comment=Install MacAni Linux using the Arch guided installer
+Exec=konsole --hold -e /usr/local/bin/macani-installer
+Icon=system-software-install
+Terminal=false
+Categories=System;Settings;
+StartupNotify=false

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+if [[ $# -ne 0 ]]; then
+    printf 'Usage: %s\n' "${0##*/}" >&2
+    exit 2
+fi
+
+if command -v kitty >/dev/null 2>&1; then
+    if kitty --config /etc/xdg/kitty/kitty.conf --title 'Aldo — MacAni Terminal' --class macani-aldo; then
+        exit 0
+    fi
+    printf 'Aldo: Kitty could not start; trying the terminal fallback.\n' >&2
+fi
+
+if command -v konsole >/dev/null 2>&1 && command -v fish >/dev/null 2>&1; then
+    exec konsole -e /usr/bin/fish --login
+fi
+if command -v fish >/dev/null 2>&1; then
+    exec /usr/bin/fish --login
+fi
+printf 'Aldo: neither Kitty nor fish is installed; install Kitty/fish or use the system recovery shell.\n' >&2
+exit 1

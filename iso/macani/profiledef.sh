@@ -22,4 +22,11 @@ file_permissions=(
   ["/usr/local/bin/choose-mirror"]="0:0:755"
   ["/usr/local/bin/Installation_guide"]="0:0:755"
   ["/usr/local/bin/livecd-sound"]="0:0:755"
+  ["/usr/local/bin/macani-live-user-setup"]="0:0:755"
+  ["/usr/local/bin/macani-live-diagnostics"]="0:0:755"
+  ["/usr/local/bin/macani-installer"]="0:0:755"
+  ["/usr/local/bin/aldo"]="0:0:755"
+  ["/usr/local/bin/macani-apply-desktop-defaults"]="0:0:755"
+  ["/usr/share/macani/installer/install-target-customizations.sh"]="0:0:755"
+  ["/etc/skel/Desktop/Install-MacAni-Linux.desktop"]="0:0:755"
 )

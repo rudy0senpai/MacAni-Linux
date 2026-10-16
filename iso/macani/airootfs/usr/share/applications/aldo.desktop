@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Aldo
+GenericName=Terminal Emulator
+Comment=Open the MacAni terminal
+Exec=aldo
+Icon=utilities-terminal
+Type=Application
+Categories=System;TerminalEmulator;Utility;
+StartupNotify=true
+Terminal=false

@@ -1,0 +1,27 @@
+pkgname=macani-desktop
+pkgver=0.2.0
+pkgrel=1
+pkgdesc='MacAni Plasma defaults and safe fish/desktop setup for installed users'
+arch=('any')
+license=('LicenseRef-MacAni')
+depends=('bash' 'plasma-workspace' 'breeze' 'macani-branding' 'macani-liquid-plasma' 'macani-gtk-theme' 'aldo-terminal' 'macani-fastfetch')
+
+package() {
+    local repo_root overlay
+    repo_root=$(realpath "$startdir/../..")
+    overlay="$repo_root/iso/macani/airootfs"
+    install -Dm644 "$overlay/etc/skel/.config/kdeglobals" \
+        "$pkgdir/etc/skel/.config/kdeglobals"
+    install -Dm644 "$overlay/etc/skel/.config/plasmarc" \
+        "$pkgdir/etc/skel/.config/plasmarc"
+    install -Dm644 "$overlay/etc/skel/.config/gtk-3.0/settings.ini" \
+        "$pkgdir/etc/skel/.config/gtk-3.0/settings.ini"
+    install -Dm644 "$overlay/etc/skel/.config/gtk-4.0/settings.ini" \
+        "$pkgdir/etc/skel/.config/gtk-4.0/settings.ini"
+    install -Dm644 "$overlay/etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc" \
+        "$pkgdir/etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc"
+    install -Dm755 "$overlay/usr/local/bin/macani-apply-desktop-defaults" \
+        "$pkgdir/usr/bin/macani-apply-desktop-defaults"
+    install -Dm644 "$repo_root/packages/LICENSE-STATUS.md" \
+        "$pkgdir/usr/share/licenses/$pkgname/LICENSE-STATUS.md"
+}

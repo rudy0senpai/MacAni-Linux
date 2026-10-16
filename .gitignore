@@ -1,9 +1,12 @@
-# Build output
-out/
-work/
+# Generated ISO and isolated Archiso workspace
+/out/
+/build-work/
+/work/
+/work*/
+/*.iso
 *.iso
 
-# Temporary build files
+# Logs and temporary files
 *.log
 *.tmp
 
@@ -19,17 +22,6 @@ pkg/
 # Credentials
 .env
 .env.*
-
-# Generated ISO and build workspace
-/out/
-/work/
-/work*/
-
-# Generated ISO and build directories
-/out/
-/work*/
-/*.iso
-*.iso
 
 # Upstream source checkouts
 /upstream/archiso-source/

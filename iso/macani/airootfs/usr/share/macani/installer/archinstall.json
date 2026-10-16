@@ -1,0 +1,27 @@
+{
+  "bootloader_config": {
+    "bootloader": "Grub",
+    "uki": false,
+    "removable": true
+  },
+  "packages": [
+    "plasma-desktop",
+    "plasma-workspace",
+    "sddm",
+    "dolphin",
+    "konsole",
+    "kate",
+    "breeze",
+    "breeze-gtk",
+    "networkmanager",
+    "kitty",
+    "fish",
+    "fastfetch",
+    "chafa",
+    "ttf-jetbrains-mono",
+    "noto-fonts",
+    "noto-fonts-emoji"
+  ],
+  "services": ["NetworkManager", "sddm"],
+  "custom_commands": ["/run/macani/install-target-customizations.sh"]
+}

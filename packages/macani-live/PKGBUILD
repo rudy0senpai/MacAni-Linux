@@ -1,0 +1,31 @@
+pkgname=macani-live
+pkgver=0.2.0
+pkgrel=1
+pkgdesc='Live-only MacAni user setup, SDDM autologin, and Archinstall launcher'
+arch=('any')
+license=('LicenseRef-MacAni')
+depends=('bash' 'systemd' 'sddm' 'archinstall' 'kitty' 'fish' 'fastfetch' 'chafa')
+
+package() {
+    local repo_root overlay
+    repo_root=$(realpath "$startdir/../..")
+    overlay="$repo_root/iso/macani/airootfs"
+    install -Dm755 "$overlay/usr/local/bin/macani-live-user-setup" \
+        "$pkgdir/usr/local/bin/macani-live-user-setup"
+    install -Dm755 "$overlay/usr/local/bin/macani-live-diagnostics" \
+        "$pkgdir/usr/local/bin/macani-live-diagnostics"
+    install -Dm755 "$overlay/usr/local/bin/macani-installer" \
+        "$pkgdir/usr/bin/macani-installer"
+    install -Dm644 "$overlay/etc/systemd/system/macani-live-user.service" \
+        "$pkgdir/usr/lib/systemd/system/macani-live-user.service"
+    install -Dm644 "$overlay/usr/share/applications/macani-installer.desktop" \
+        "$pkgdir/usr/share/applications/macani-installer.desktop"
+    install -Dm644 "$overlay/etc/skel/Desktop/Install-MacAni-Linux.desktop" \
+        "$pkgdir/etc/skel/Desktop/Install-MacAni-Linux.desktop"
+    install -Dm644 "$overlay/usr/share/macani/installer/archinstall.json" \
+        "$pkgdir/usr/share/macani/installer/archinstall.json"
+    install -Dm755 "$overlay/usr/share/macani/installer/install-target-customizations.sh" \
+        "$pkgdir/usr/share/macani/installer/install-target-customizations.sh"
+    install -Dm644 "$repo_root/packages/LICENSE-STATUS.md" \
+        "$pkgdir/usr/share/licenses/$pkgname/LICENSE-STATUS.md"
+}

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Install MacAni Linux
+GenericName=Guided system installer
+Comment=Install MacAni Linux with guided GRUB or rEFInd selection
+Exec=konsole --hold -e macani-installer
+Icon=system-software-install
+Terminal=false
+Categories=System;Settings;
+StartupNotify=false

@@ -1,0 +1,31 @@
+pkgname=macani-branding
+pkgver=0.2.0
+pkgrel=1
+pkgdesc='MacAni Linux visual assets, Sakura colors, wallpapers, sounds, and official logo'
+arch=('any')
+license=('LicenseRef-MacAni')
+depends=('plasma-workspace')
+
+# Build from the checkout. All assets are project-local; no artwork is fetched.
+package() {
+    local repo_root overlay
+    repo_root=$(realpath "$startdir/../..")
+    overlay="$repo_root/iso/macani/airootfs/usr/share"
+    local assets=(
+        backgrounds/macani
+        color-schemes/MacAni-Sakura.colors
+        icons/MacAni-Characters
+        sounds/MacAni-Sakura
+        macani/characters
+        pixmaps/macani/MacAni-Linux_logo.png
+    )
+    install -d "$pkgdir/usr/share"
+    for asset in "${assets[@]}"; do
+        [[ -e "$overlay/$asset" ]] || { printf 'Missing overlay asset: %s\n' "$asset" >&2; return 1; }
+        install -d "$pkgdir/usr/share/$(dirname "$asset")"
+        cp -a -- "$overlay/$asset" "$pkgdir/usr/share/$(dirname "$asset")/"
+    done
+    install -Dm644 "$repo_root/packages/LICENSE-STATUS.md" \
+        "$pkgdir/usr/share/licenses/$pkgname/LICENSE-STATUS.md"
+}
+

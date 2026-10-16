@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+usage() {
+    printf 'Usage: %s [--help]\nReport live user, SDDM session, and systemd readiness.\n' "${0##*/}"
+}
+case "${1:-}" in
+    -h|--help) usage; exit 0 ;;
+    '') ;;
+    *) usage >&2; exit 2 ;;
+esac
+
+printf '%-28s' 'Archiso live runtime:'
+if [[ -d /run/archiso ]]; then echo 'present'; else echo 'not detected'; fi
+printf '%-28s' 'Live user:'
+if getent passwd macani >/dev/null; then getent passwd macani; else echo 'missing'; fi
+printf '%-28s' 'SDDM live configuration:'
+if [[ -r /etc/sddm.conf.d/10-macani-live.conf ]]; then cat /etc/sddm.conf.d/10-macani-live.conf; else echo 'missing'; fi
+printf '%-28s' 'Plasma session files:'
+find /usr/share/wayland-sessions /usr/share/xsessions -maxdepth 1 -type f -name '*plasma*.desktop' -print 2>/dev/null || true
+printf '%-28s' 'Live user service:'
+systemctl status macani-live-user.service --no-pager --full 2>&1 || true
+printf '%-28s' 'Display manager:'
+systemctl status display-manager.service --no-pager --full 2>&1 || true
+printf '%s\n' 'Recent relevant journal:'
+journalctl -b -u macani-live-user.service -u display-manager.service --no-pager -n 60 2>&1 || true

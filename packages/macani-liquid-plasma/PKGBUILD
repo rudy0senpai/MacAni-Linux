@@ -1,0 +1,26 @@
+pkgname=macani-liquid-plasma
+pkgver=0.1.0
+pkgrel=1
+pkgdesc='Curated GPL Plasma 6 styles from macOS Tahoe Liquid KDE, without its Apple wallpapers'
+arch=('any')
+url='https://github.com/lestercorderomurillo/macos-tahoe-liquid-kde'
+license=('GPL-3.0-only')
+depends=('plasma-workspace')
+
+package() {
+    local repo_root overlay theme
+    repo_root=$(realpath "$startdir/../..")
+    overlay="$repo_root/iso/macani/airootfs/usr/share/plasma/desktoptheme"
+    install -d -m 0755 "$pkgdir/usr/share/plasma/desktoptheme"
+    for theme in MacTahoeLiquidKde-Dark MacTahoeLiquidKde-Light; do
+        [[ -d "$overlay/$theme" ]] || {
+            printf 'Missing curated upstream Plasma style: %s\n' "$overlay/$theme" >&2
+            return 1
+        }
+        cp -a "$overlay/$theme" "$pkgdir/usr/share/plasma/desktoptheme/"
+    done
+    install -Dm0644 "$startdir/LICENSE.upstream" \
+        "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+    install -Dm0644 "$startdir/UPSTREAM.md" \
+        "$pkgdir/usr/share/doc/$pkgname/UPSTREAM.md"
+}
