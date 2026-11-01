@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=MacAni Linux
+Comment=MacAni liquid-glass SDDM greeter theme
+Keywords=sddm;greeter;
+X-KDE-GreeterTheme=MacAni Linux

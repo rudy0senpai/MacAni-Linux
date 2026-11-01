@@ -17,7 +17,8 @@ for path in \
     [[ -f "$path" ]] || fail "missing required Aldo/logo asset: ${path#"$repo_root"/}"
 done
 bash -n "$profile/airootfs/usr/local/bin/aldo"
-python3 - "$profile/airootfs/etc/fastfetch/macani-kitty.jsonc" "$profile/airootfs/etc/fastfetch/macani-fallback.jsonc" "$profile/airootfs/usr/share/pixmaps/macani/MacAni-Linux_logo.png" <<'PY'
+repo_root_win=$(cygpath -w "$repo_root" 2>/dev/null || printf '%s' "$repo_root")
+python3 - "$repo_root_win/iso/macani/airootfs/etc/fastfetch/macani-kitty.jsonc" "$repo_root_win/iso/macani/airootfs/etc/fastfetch/macani-fallback.jsonc" "$repo_root_win/iso/macani/airootfs/usr/share/pixmaps/macani/MacAni-Linux_logo.png" <<'PY'
 import json, pathlib, struct, sys
 for config in sys.argv[1:3]:
     data=json.loads(pathlib.Path(config).read_text())

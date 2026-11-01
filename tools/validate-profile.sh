@@ -59,10 +59,19 @@ done
 service="$profile/airootfs/etc/systemd/system/macani-live-user.service"
 link="$profile/airootfs/etc/systemd/system/multi-user.target.wants/macani-live-user.service"
 [[ -f "$service" ]] || { echo 'ERROR: live-user unit missing' >&2; errors=$((errors + 1)); }
-[[ -L "$link" && "$(readlink "$link")" == ../macani-live-user.service ]] || {
+# Accept a real symlink OR a plain file whose content is the relative target
+# (Windows checkouts cannot store symlinks and check them out as target text).
+if [[ -L "$link" ]]; then
+    target=$(readlink "$link")
+elif [[ -f "$link" ]]; then
+    target=$(cat "$link")
+else
+    target=""
+fi
+if [[ "$target" != "../macani-live-user.service" ]]; then
     echo 'ERROR: live-user unit enablement link is missing or incorrect' >&2
     errors=$((errors + 1))
-}
+fi
 grep -q '^Before=display-manager\.service$' "$service" || {
     echo 'ERROR: live-user service is not ordered before the display manager' >&2
     errors=$((errors + 1))
@@ -83,8 +92,49 @@ for recipe in macani-branding macani-fastfetch aldo-terminal macani-liquid-plasm
         errors=$((errors + 1))
     }
 done
-grep -qx 'Current=breeze' "$profile/airootfs/etc/sddm.conf.d/20-macani-theme.conf" || {
-    echo 'ERROR: the selected Qt6-compatible Breeze SDDM theme is not configured' >&2
+sddm_theme_dir="$profile/airootfs/usr/share/sddm/themes/macani"
+
+# --- SDDM macani theme integration (replaces the old Breeze-only check) ---
+if [[ ! -d "$sddm_theme_dir" ]]; then
+    echo "ERROR: SDDM theme directory missing: $sddm_theme_dir" >&2
+    errors=$((errors + 1))
+fi
+for file in Main.qml theme.conf metadata.desktop logo.png; do
+    if [[ ! -f "$sddm_theme_dir/$file" ]]; then
+        echo "ERROR: SDDM theme asset missing: $file" >&2
+        errors=$((errors + 1))
+    fi
+done
+if ! grep -qx 'Current=macani' "$profile/airootfs/etc/sddm.conf.d/20-macani-theme.conf"; then
+    echo 'ERROR: SDDM theme is not selected as macani' >&2
+    errors=$((errors + 1))
+fi
+# Ensure no other sddm.conf.d entry overrides the theme selection.
+for conf in "$profile/airootfs/etc/sddm.conf.d/"*; do
+    if [[ -f "$conf" ]] && ! grep -qx 'Current=macani' "$conf"; then
+        echo "ERROR: unexpected sddm.conf.d entry: $(basename "$conf")" >&2
+        errors=$((errors + 1))
+    fi
+done
+# Required SDDM packages and services.
+grep -qx 'sddm' "$profile/packages.x86_64" || {
+    echo 'ERROR: sddm missing from x86_64 package list' >&2
+    errors=$((errors + 1))
+}
+[[ -f "$profile/airootfs/etc/systemd/system/display-manager.service" ]] || {
+    echo 'ERROR: display-manager.service missing' >&2
+    errors=$((errors + 1))
+}
+grep -q '/usr/lib/systemd/system/sddm.service' "$profile/airootfs/etc/systemd/system/display-manager.service" || {
+    echo 'ERROR: display-manager.service does not point to sddm' >&2
+    errors=$((errors + 1))
+}
+[[ -f "$profile/airootfs/etc/systemd/system/macani-live-user.service" ]] || {
+    echo 'ERROR: macani-live-user.service missing' >&2
+    errors=$((errors + 1))
+}
+grep -q '^Before=display-manager\.service$' "$profile/airootfs/etc/systemd/system/macani-live-user.service" || {
+    echo 'ERROR: live-user service is not ordered before the display manager' >&2
     errors=$((errors + 1))
 }
 grep -qx 'name=MacTahoeLiquidKde-Dark' "$profile/airootfs/etc/skel/.config/plasmarc" || {
@@ -104,9 +154,14 @@ for version in 3.0 4.0; do
         errors=$((errors + 1))
     }
 done
-python3 - "$profile/airootfs/usr/share/macani/installer/archinstall.json" <<'PY' || errors=$((errors + 1))
+repo_root_win=$(cygpath -w "$repo_root" 2>/dev/null || printf '%s' "$repo_root")
+python3 - "$repo_root_win/iso/macani/airootfs/usr/share/macani/installer/archinstall.json" <<'PY' || errors=$((errors + 1))
 import json, pathlib, sys
-config=json.loads(pathlib.Path(sys.argv[1]).read_text())
+p = sys.argv[1]
+if not pathlib.Path(p).exists():
+    print("ERROR: archinstall.json not found: %s" % p, file=sys.stderr)
+    sys.exit(1)
+config=json.loads(pathlib.Path(p).read_text())
 assert config["bootloader_config"]["bootloader"] == "Grub"
 assert config["bootloader_config"]["uki"] is False
 assert "/run/macani/install-target-customizations.sh" in config["custom_commands"]
@@ -117,7 +172,7 @@ if [[ $errors -ne 0 ]]; then
     printf 'Profile validation failed (%d issue(s)).\n' "$errors" >&2
     exit 1
 fi
-printf 'Profile validation passed: scripts, package declarations, Plasma/GTK defaults, Breeze SDDM, Archinstall GRUB preset, and live-service ordering.\n'
+printf 'Profile validation passed: scripts, package declarations, Plasma/GTK defaults, macani SDDM theme, Archinstall GRUB preset, and live-service ordering.\n'
 bash "$repo_root/tools/test-aldo-fastfetch.sh"
 if command -v shellcheck >/dev/null 2>&1; then
     shellcheck "${scripts[@]}" "$repo_root/tools/build-packages.sh" "$repo_root/tools/build-iso.sh"
