@@ -13,6 +13,7 @@ Theme=MacAni-Characters
 
 [KDE]
 SingleClick=false
+KDE.Session.Appearance=MacTahoeLiquidKde-Dark
 
 [WM]
 activeFont=Noto Sans,10,-1,0,50,0,0,0,0,0
@@ -22,3 +23,6 @@ Theme=MacAni-Sakura
 
 [Mouse]
 cursorTheme=Breeze
+
+[QtWindowEffects]
+colorScheme=MacAni-Sakura

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <defs>
+    <linearGradient id="glassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1a2e"/>
+      <stop offset="100%" stop-color="#0a0e1a"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="14" height="14" rx="3" ry="3" fill="url(#glassGrad)" opacity="0.75"/>
+  <rect x="3.5" y="6.5" width="5" height="3" rx="1" ry="1" fill="#6366f1" opacity="0.6"/>
+  <rect x="3.5" y="6.5" width="5" height="3" rx="1" ry="1" fill="none" stroke="#6366f1" stroke-opacity="0.4" stroke-width="1"/>
+</svg>
