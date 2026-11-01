@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=MacAni Linux
+Description=MacAni Liquid Glass animated boot splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/macani
+ScriptFile=/usr/share/plymouth/themes/macani/macani.script
