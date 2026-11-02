@@ -18,9 +18,9 @@
 | Phase 1B: Application menu text contrast | ✅ Complete |
 | Phase 2A: Theme architecture audit | 🔄 Started |
 | Phase 2B: Liquid Glass panels/launcher/menus/widgets | ✅ Complete |
-| Phase 2C: Dolphin & System Settings | ⏳ Not started |
-| Phase 2D: Window decorations & blur | ⏳ Not started |
-| Phase 2E: Package integration & VM testing | ⏳ Not started |
+|| Phase 2C: Dolphin & System Settings | ✅ Complete (363469b, ed2a6aa) |
+|| Phase 2D: Window decorations & blur | ✅ Complete (160f3b8, 665366b) |
+|| Phase 2E: Package integration & VM testing | ⏳ Not started |
 
 ---
 
@@ -375,7 +375,5 @@ Last session's backup files were temporarily in `tmp_ph1b_backups/`, which has b
 
 ## Next Steps
 
-1. **Complete Phase 2C** — Improve Dolphin and System Settings appearance.
-2. **Complete Phase 2D** — Integrate window decorations, blur, transparency, GTK/Qt consistency.
-3. **Complete Phase 2E** — Validate package integration and prepare VM testing.
-4. **Build & validate ISO** — After all Phase 2 changes are validated.
+1. **Complete Phase 2E** — Validate package integration and prepare VM testing.
+2. **Build & validate ISO** — After all Phase 2 changes are validated.
