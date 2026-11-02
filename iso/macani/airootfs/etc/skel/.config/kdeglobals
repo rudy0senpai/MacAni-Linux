@@ -26,3 +26,12 @@ cursorTheme=Breeze
 
 [QtWindowEffects]
 colorScheme=MacAni-Sakura
+accentColorMode=MacAni
+
+[AccentColors]
+Cyan=#22d3ee
+Magenta=#ec4899
+Violet=#a78bfa
+Blue=#6366f1
+Navy=#0a0e1a
+Text=#e8ecf6

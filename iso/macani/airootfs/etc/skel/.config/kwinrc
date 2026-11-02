@@ -1,0 +1,37 @@
+[KWin]
+# MacAni Liquid Glass - KWin Window Decoration Configuration
+# Rounded corners: enabled (KWin 5.25+ supports _KWinRoundedCorners)
+RoundedCornersEnabled=true
+RoundedCornersSize=16
+
+# Titlebar appearance
+TitleBarWindowsActive=yes
+TitleBarWindowsInactive=yes
+TitleBarFont=Noto Sans,10,-1,0,50,0,0,0,0,0
+TitleBarTextColor=#e8ecf6
+TitleBarTextColorInactive=#a8b2c8
+
+# Titlebar buttons (Mac style: close, minimize, maximize)
+TitleBarButtons=Mac
+TitleBarButtonsActive=#22d3ee
+TitleBarButtonsHover=#6366f1
+TitleBarButtonsInactive=#a8b2c8
+
+# Blur and transparency (KWin's blur plugin)
+BlurBehindWindows=true
+BlurBehindDialogs=true
+BlurBehindMenus=true
+BlurOpacity=0.75
+BlurQuality=High
+
+# Transparency
+WindowTranslucency=0.85
+
+# Shadow
+ShadowIntensity=1.0
+ShadowSoftness=4
+ShadowColor=#000000
+
+# Keep above
+KeepAbove=Yes
+KeepBelow=No

@@ -1,3 +1,11 @@
+
+/* MacAni Liquid Glass - Custom color definitions */
+@define-color MacAni-Cyan #22d3ee;
+@define-color MacAni-Magenta #ec4899;
+@define-color MacAni-Violet #a78bfa;
+@define-color MacAni-Blue #6366f1;
+@define-color MacAni-Navy #0a0e1a;
+@define-color MacAni-Text #e8ecf6;
 /* This stylesheet is generated, DO NOT EDIT */
 * {
   background-clip: padding-box;

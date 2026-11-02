@@ -20,6 +20,8 @@ package() {
         "$pkgdir/etc/skel/.config/gtk-4.0/settings.ini"
     install -Dm644 "$overlay/etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc" \
         "$pkgdir/etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc"
+    install -Dm644 "$overlay/etc/skel/.config/kwinrc" \
+        "$pkgdir/etc/skel/.config/kwinrc"
     install -Dm755 "$overlay/usr/local/bin/macani-apply-desktop-defaults" \
         "$pkgdir/usr/bin/macani-apply-desktop-defaults"
     install -Dm644 "$repo_root/packages/LICENSE-STATUS.md" \
